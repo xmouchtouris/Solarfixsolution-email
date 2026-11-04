@@ -29,7 +29,10 @@ test('preview cannot expose secrets, source files or PHP source', async () => {
 test('local contact preview reports failure instead of pretending to send mail', async () => {
   const response = await fetch(base + '/send-email.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({name:'Preview test'}) });
   assert.equal(response.status, 503);
-  assert.equal((await response.json()).success, false);
+  const result = await response.json();
+  assert.equal(result.success, false);
+  assert.match(result.message, /local preview cannot send email/);
+  assert.ok(result.message.includes('https://solarfixsolutions.co.za/contact.html'));
 });
 test('Afrihost package contains only intended public files', () => {
   const root = path.join(__dirname, '..', 'dist');

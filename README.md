@@ -23,16 +23,16 @@ The checks cover page links, local assets, headings, navigation, the form route,
 
 ## Publish on Afrihost
 
-1. Build the upload folder with `npm run build`.
+1. Run `npm run package:afrihost` to rebuild the public files and create `solar-fix-solutions-afrihost.zip`. This uses the `zip` utility included with macOS. Run it again after any website changes to generate a fresh archive.
 2. Download a backup of the current site through Afrihost File Manager or your FTP client.
 3. In Afrihost ClientZone, select the domain under Hosting and open Website Manager (cPanel or CWP).
-4. Confirm the domain uses a supported PHP version, **PHP 8.2 or newer**, through MultiPHP Manager or PHP Selector. This setup assumes an Afrihost Linux hosting plan with PHP enabled.
-5. Upload the **contents of `dist/`** into the domain's document root, usually `public_html`. Keep the `css`, `js` and `images` folders intact. `index.html` and `send-email.php` must be directly in that root, not inside an extra `dist` folder.
-6. Open the HTTPS website and check every page, the mobile menu, gallery and contact form. Confirm one real test enquiry arrives in `info@solarfixsolutions.co.za` and that replying goes to the address entered in the form.
+4. Confirm the domain uses a supported PHP version, **PHP 8.2 or newer**, through MultiPHP Manager or PHP Selector. In cPanel **Domains**, enable **Force HTTPS Redirect** for `solarfixsolutions.co.za` once its SSL certificate is valid. The contact endpoint intentionally rejects HTTP browser origins. This setup assumes an Afrihost Linux hosting plan with PHP enabled.
+5. In cPanel File Manager, open the domain's document root (usually `public_html`), click **Upload**, and upload the single ZIP. Return to File Manager, select the ZIP, click **Extract**, and extract into that same document root. The archive preserves the `css`, `js` and `images` folders, with `index.html` and `send-email.php` directly in the root. It does not add a `dist` folder. Confirm the existing site files have been replaced with the new version.
+6. Open the HTTPS website and check every page, the mobile menu, gallery and contact form. Confirm one real test enquiry arrives in `info@solarfixsolutions.co.za` and that replying goes to the address entered in the form. After verifying the update, remove the uploaded ZIP from the server.
 
-Only upload `dist/`. The build includes the five HTML pages, the CSS, browser JavaScript, required images and the PHP endpoint. It excludes `.env`, `.git`, `node_modules`, the local preview server and development files. If any private files were uploaded previously, remove those copies from the public web directory.
+Only upload the generated ZIP or the contents of `dist/`. The build includes the five HTML pages, the CSS, browser JavaScript, required images and the PHP endpoint. It excludes `.env`, `.git`, `node_modules`, the local preview server and development files. If any private files were uploaded previously, remove those copies from the public web directory. If you prefer an FTP client, `npm run build` still prepares `dist/` for a folder upload.
 
-Official instructions: [upload website files](https://help.afrihost.com/entry/how-to-publish-or-upload-your-website-files-to-the-internet-and-make-your-website-live/) · [change PHP version](https://help.afrihost.com/entry/how-to-update-your-domain-php-version/) · [supported scripts on Linux hosting](https://help.afrihost.com/entry/can-i-run-my-own-software-on-my-site/).
+Official instructions: [upload website files](https://help.afrihost.com/entry/how-to-publish-or-upload-your-website-files-to-the-internet-and-make-your-website-live/) · [upload and extract a ZIP in cPanel](https://support.cpanel.net/hc/en-us/articles/360055141854-Using-File-Manager-To-Extract-Files) · [change PHP version](https://help.afrihost.com/entry/how-to-update-your-domain-php-version/) · [supported scripts on Linux hosting](https://help.afrihost.com/entry/can-i-run-my-own-software-on-my-site/).
 
 ## How the contact form works
 
@@ -47,6 +47,10 @@ The endpoint uses PHP's `mail()` function with `info@solarfixsolutions.co.za` as
 If a test does not arrive, check spam and the domain's mail routing/authentication in cPanel, then ask Afrihost whether PHP mail is enabled for the account. If they require authenticated SMTP, the PHP endpoint will need a server-side SMTP configuration; credentials must be kept outside `public_html`.
 
 The allowed browser origins are the HTTPS versions of `solarfixsolutions.co.za` and `www.solarfixsolutions.co.za`. Update `$allowedOrigins` in `send-email.php` if the production domain changes. Use HTTPS. Without JavaScript, the regular form displays a result page with contact links.
+
+If the form shows an error, first confirm the address starts with `https://`. The site must redirect HTTP visitors to HTTPS using cPanel's [Force HTTPS Redirect setting](https://docs.cpanel.net/cpanel/domains/domains/); simply serving a valid HTTPS page does not enable this redirect. Keep the HTTPS-only origin check in PHP.
+
+The form displays the endpoint's public error message while preserving the visitor's input. If a request still fails over HTTPS, inspect the `send-email.php` request's status and response in the browser's Network panel. A 400 indicates invalid fields, 403 indicates a rejected origin, 429 indicates rate limiting, and 503 indicates a temporary-storage or mail-service failure. A non-JSON error may come from the web server or hosting firewall. Check the PHP error log in cPanel for the same time; use Email → Track Delivery if the mail server accepted a message but it did not arrive. A successful GET check (the endpoint's normal 405 response) only proves that PHP executes, not that sending works.
 
 ## Retiring Railway
 

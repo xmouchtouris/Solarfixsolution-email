@@ -5,6 +5,7 @@
   "description": "Solar Fix Solutions website, deployed to Afrihost with a PHP contact form.",
   "scripts": {
     "build": "node scripts/build-static.mjs",
+    "package:afrihost": "node scripts/package-afrihost.mjs",
     "start": "node server.js",
     "dev": "npm run build && node server.js",
     "check": "node --check server.js && node --check js/scripts.js && node scripts/check-site.mjs",

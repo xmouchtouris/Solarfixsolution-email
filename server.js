@@ -15,7 +15,7 @@ function createPreviewServer() {
     catch { res.writeHead(400); res.end('Invalid URL'); return; }
     if (pathname === '/send-email.php') {
       res.writeHead(503, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ success: false, message: 'UI preview only. The contact form sends email on PHP-enabled Afrihost hosting.' }));
+      res.end(JSON.stringify({ success: false, message: 'This local preview cannot send email. Open https://solarfixsolutions.co.za/contact.html to test the live contact form.' }));
       return;
     }
     if (!['GET', 'HEAD'].includes(req.method)) { res.writeHead(405, { Allow: 'GET, HEAD' }); res.end(); return; }

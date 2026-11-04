@@ -44,7 +44,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 $allowedOrigins = ['https://solarfixsolutions.co.za', 'https://www.solarfixsolutions.co.za'];
 if ($origin !== '' && !in_array($origin, $allowedOrigins, true)) {
-    respond(403, 'Please submit your enquiry from our website.');
+    respond(403, 'Please open https://solarfixsolutions.co.za/contact.html and try again.');
 }
 
 if ((int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > 20000) {

@@ -116,13 +116,23 @@ if (contactForm) {
     try {
       const response = await fetch(contactForm.action, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(details), signal: controller.signal });
       const result = await response.json().catch(() => null);
-      if (!response.ok || result?.success !== true) throw new Error(response.status === 429 ? 'limited' : 'unavailable');
+      if (!response.ok || result?.success !== true) {
+        const error = new Error(response.status === 429 ? 'limited' : 'unavailable');
+        // The PHP endpoint returns fixed, public messages. Keep its useful
+        // validation/hosting feedback instead of hiding every failure.
+        if (result?.success === false && typeof result.message === 'string' && result.message.trim()) {
+          error.publicMessage = result.message;
+        }
+        throw error;
+      }
       status.dataset.state = 'success';
       status.textContent = outcomes.sent[1];
       contactForm.reset();
     } catch (error) {
       status.dataset.state = 'error';
-      status.textContent = error.message === 'limited' ? outcomes.limited[1] : 'We couldn’t confirm that your enquiry was sent. Your message is still here. Please call us or send it using your email app below.';
+      status.textContent = error.publicMessage
+        ? `${error.publicMessage} Your message is still here. You can also send it using your email app below.`
+        : error.message === 'limited' ? outcomes.limited[1] : 'We couldn’t confirm that your enquiry was sent. Your message is still here. Please call us or send it using your email app below.';
       fallback.hidden = false;
     } finally {
       clearTimeout(timeout);
