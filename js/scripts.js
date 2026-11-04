@@ -5,6 +5,11 @@ const menuToggle = document.querySelector('.menu-toggle');
 const navigation = document.querySelector('#primary-navigation');
 if (menuToggle && navigation) {
   menuToggle.hidden = false;
+  const sizeMenu = () => {
+    if (!navigation.classList.contains('is-open')) return;
+    // The sticky header sits below the utility bar until the page scrolls.
+    navigation.style.setProperty('--menu-top', `${Math.ceil(navigation.getBoundingClientRect().top)}px`);
+  };
   const closeMenu = () => {
     navigation.classList.remove('is-open');
     menuToggle.setAttribute('aria-expanded', 'false');
@@ -17,6 +22,10 @@ if (menuToggle && navigation) {
     menuToggle.setAttribute('aria-expanded', String(open));
     menuToggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
     document.body.classList.toggle('menu-open', open);
+    if (open) {
+      sizeMenu();
+      navigation.scrollTop = 0;
+    }
   });
   navigation.addEventListener('click', event => { if (event.target.closest('a')) closeMenu(); });
   document.addEventListener('keydown', event => {
@@ -30,6 +39,7 @@ if (menuToggle && navigation) {
   });
   document.addEventListener('click', event => { if (!event.target.closest('.site-header')) closeMenu(); });
   window.matchMedia('(min-width: 861px)').addEventListener('change', closeMenu);
+  window.addEventListener('resize', sizeMenu);
 }
 
 document.querySelectorAll('[data-year]').forEach(element => { element.textContent = new Date().getFullYear(); });

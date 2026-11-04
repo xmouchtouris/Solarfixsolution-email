@@ -41,7 +41,7 @@
 <a href="contact.html" aria-current="page">Contact</a>
 </li>
 </ul>
-<a class="button nav-cta" href="contact.html">Get a quote<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+<a class="button nav-cta" href="contact.html#contact-form">Get a quote<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
 </nav>
 </div>
 </header>
@@ -51,47 +51,18 @@
 <nav class="breadcrumbs" aria-label="Breadcrumb">
 <a href="index.html">Home</a><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span aria-current="page">Contact us</span>
 </nav>
-<p class="eyebrow">
-Contact us
-</p>
 <h1>
-Let’s talk about<br><span class="accent-text">your next project.</span>
+Request a <span class="accent-text">quote.</span>
 </h1>
 <p class="lead">
-A new installation, a system that needs some attention, or just a question. Tell us what you have in mind.
+Tell us what you need, from a new installation to a repair. We’ll help you work out the next step.
 </p>
 </div>
 </section>
 <section class="section">
 <div class="container contact-layout">
-<div class="contact-details">
-<p class="eyebrow">
-A conversation starts here
-</p>
-<h2>
-Good advice.<br>A friendly voice.
-</h2>
-<p class="lead">
-Speak directly to our team or send us a few details using the form. We’ll help you work out the next step.
-</p>
-<div class="contact-person">
-<span>Christaki Mouchtouris</span><a href="tel:+27679804414">067 980 4414<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 3-3 1c-2 6 10 18 16 16l1-3-5-3-2 2-6-6 2-2Z"/></svg></a>
-</div>
-<div class="contact-person">
-<span>Andrew Sprackett</span><a href="tel:+27761680441">076 168 0441<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 3-3 1c-2 6 10 18 16 16l1-3-5-3-2 2-6-6 2-2Z"/></svg></a>
-</div>
-<a class="email-link" href="mailto:info@solarfixsolutions.co.za"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg>info@solarfixsolutions.co.za</a>
-<div class="contact-note">
-<h3>
-A little detail goes a long way.
-</h3>
-<p>
-Include your location and a brief description of the work. For repairs, tell us about the equipment and what seems to be going wrong.
-</p>
-</div>
-</div>
-<form class="contact-form" id="contact-form" action="send-email.php" method="post">
-<h2>
+<form class="contact-form" id="contact-form" tabindex="-1" aria-labelledby="contact-form-title" action="send-email.php" method="post">
+<h2 id="contact-form-title">
 Tell us what you need.
 </h2>
 <p class="form-intro">
@@ -121,8 +92,7 @@ Fields marked * are required.
 The details you share will be used to respond to your enquiry.
 </p>
 <button class="button" type="submit"><span>Send enquiry</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-<p class="form-status" id="form-status" role="status" aria-live="polite" aria-atomic="true">
-</p>
+<p class="form-status" id="form-status" role="status" aria-live="polite" aria-atomic="true"></p>
 <div class="form-fallback" id="form-fallback" hidden>
 <p>
 You can send your message directly using your email app.
@@ -135,6 +105,29 @@ You can submit this form without JavaScript, or email <a href="mailto:info@solar
 </p>
 </noscript>
 </form>
+<aside class="contact-details" id="contact-details" aria-labelledby="contact-details-title">
+<h2 id="contact-details-title">
+Prefer to talk?
+</h2>
+<p class="lead">
+Call Christaki or Andrew to discuss your project, or email the team directly.
+</p>
+<div class="contact-person">
+<span>Christaki Mouchtouris</span><a href="tel:+27679804414">067 980 4414<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 3-3 1c-2 6 10 18 16 16l1-3-5-3-2 2-6-6 2-2Z"/></svg></a>
+</div>
+<div class="contact-person">
+<span>Andrew Sprackett</span><a href="tel:+27761680441">076 168 0441<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 3-3 1c-2 6 10 18 16 16l1-3-5-3-2 2-6-6 2-2Z"/></svg></a>
+</div>
+<a class="email-link" href="mailto:info@solarfixsolutions.co.za"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg>info@solarfixsolutions.co.za</a>
+<div class="contact-note">
+<h3>
+A little detail goes a long way.
+</h3>
+<p>
+Include your location and a brief description of the work. For repairs, tell us about the equipment and what seems to be going wrong.
+</p>
+</div>
+</aside>
 </div>
 </section>
 </main>
