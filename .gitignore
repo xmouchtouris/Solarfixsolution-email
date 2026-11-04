@@ -10,3 +10,7 @@ logs/
 
 # Others
 .DS_Store
+
+# Generated public upload package
+dist/
+solar-fix-solutions-afrihost.zip

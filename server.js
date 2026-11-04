@@ -1,159 +1,40 @@
-// Load Environment Variables
-require('dotenv').config();
+'use strict';
+// Local UI preview only. Production uses Afrihost's PHP server and send-email.php.
+const http = require('node:http');
+const fs = require('node:fs');
+const path = require('node:path');
+const root = path.join(__dirname, 'dist');
+const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.jpg': 'image/jpeg' };
 
-console.log('Environment Variables Loaded:', process.env);
-
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const nodemailer = require('nodemailer');
-const path = require('path');
-const rateLimit = require('express-rate-limit');
-const { body, validationResult } = require('express-validator');
-const sanitizeHtml = require('sanitize-html');
-
-const app = express();
-const port = process.env.PORT || 3000;
-
-// Middleware
-
-// Set Security Headers
-app.use(helmet());
-
-// Rate Limiting Middleware
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
-  message: 'Too many requests, please try again later.',
-});
-
-app.use('/send-email', limiter);
-
-let allowedOrigins = [];
-
-if (process.env.ALLOWED_ORIGINS) {
-  allowedOrigins = process.env.ALLOWED_ORIGINS.split(',');
-} else {
-  console.error('ERROR: ALLOWED_ORIGINS environment variable is not set.');
-  process.exit(1);
-}
-
-// CORS Configuration - Restrict to Your Domain
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin (e.g., mobile apps, curl requests)
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.indexOf(origin) !== -1) {
-        return callback(null, true);
-      } else {
-        const msg = 'The CORS policy for this site does not allow access from the specified origin.';
-        return callback(new Error(msg), false);
-      }
-    },
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type'],
-  })
-  );
-
-
-
-// Body Parsing Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Serve Static Files
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Verify Environment Variables on Startup
-console.log('Environment Variables:');
-console.log('SMTP_USER:', process.env.SMTP_USER ? '***Exists***' : 'MISSING!');
-console.log('SMTP_PASS:', process.env.SMTP_PASS ? '***Exists***' : 'MISSING!');
-
-// Check for missing SMTP configuration
-if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-  console.error('ERROR: SMTP_USER and SMTP_PASS environment variables are required.');
-  process.exit(1);
-}
-
-// Nodemailer Transporter Configuration
-const transporter = nodemailer.createTransport({
-  service: 'Gmail',
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
-
-// Verify Transporter Connection Configuration
-transporter.verify((error) => {
-  if (error) {
-    console.error('Mail Transporter Error:', error);
-  } else {
-    console.log('Server is ready to send emails');
-  }
-});
-
-// Email Sending Endpoint with Validation and Sanitization
-app.post(
-  '/send-email',
-  [
-    // Input Validation
-    body('name').trim().notEmpty().withMessage('Name is required.'),
-    body('email').isEmail().withMessage('Valid email is required.'),
-    body('message').trim().notEmpty().withMessage('Message is required.'),
-    body('phone').optional().trim(),
-  ],
-  async (req, res) => {
-    // Handle Validation Errors
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ success: false, errors: errors.array() });
+function createPreviewServer() {
+  return http.createServer((req, res) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('Cache-Control', 'no-store');
+    let pathname;
+    try { pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname); }
+    catch { res.writeHead(400); res.end('Invalid URL'); return; }
+    if (pathname === '/send-email.php') {
+      res.writeHead(503, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, message: 'UI preview only. The contact form sends email on PHP-enabled Afrihost hosting.' }));
+      return;
     }
-
-    try {
-      // Extract and Sanitize User Inputs
-      const name = sanitizeHtml(req.body.name);
-      const email = sanitizeHtml(req.body.email);
-      const phone = sanitizeHtml(req.body.phone || 'Not provided');
-      const message = sanitizeHtml(req.body.message, {
-        allowedTags: ['b', 'i', 'em', 'strong', 'p', 'br'],
-        allowedAttributes: {},
-      });
-
-      console.log('Received sanitized form submission:', { name, email, phone });
-
-      // Compose Mail Options
-      const mailOptions = {
-        from: process.env.SMTP_USER,
-        to: 'info@solarfixsolutions.co.za', // Replace with your desired recipient email
-        subject: `New Contact Form Submission from ${name}`,
-        html: `
-          <h3>New Contact Request</h3>
-          <p><strong>Name:</strong> ${name}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Phone:</strong> ${phone}</p>
-          <p><strong>Message:</strong></p>
-          <p>${message}</p>
-        `,
-      };
-
-      // Send Email
-      const info = await transporter.sendMail(mailOptions);
-      console.log('Email sent:', info.response);
-      res.json({ success: true });
-    } catch (error) {
-      console.error('Error sending email:', error);
-      res.status(500).json({
-        success: false,
-        error: 'An error occurred while sending the email. Please try again later.',
-      });
+    if (!['GET', 'HEAD'].includes(req.method)) { res.writeHead(405, { Allow: 'GET, HEAD' }); res.end(); return; }
+    const relative = pathname === '/' ? 'index.html' : pathname.slice(1);
+    const filename = path.resolve(root, relative);
+    const type = types[path.extname(filename).toLowerCase()];
+    if (!type || !filename.startsWith(root + path.sep) || relative.split('/').some(part => part.startsWith('.'))) {
+      res.writeHead(404); res.end('Not found'); return;
     }
-  }
-);
-
-// Start the Server
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
-
+    fs.readFile(filename, (error, data) => {
+      if (error) { res.writeHead(404); res.end('Not found'); return; }
+      res.writeHead(200, { 'Content-Type': type });
+      res.end(req.method === 'HEAD' ? undefined : data);
+    });
+  });
+}
+if (require.main === module) {
+  if (!fs.existsSync(path.join(root, 'index.html'))) { console.error('Run npm run build first.'); process.exit(1); }
+  const port = Number(process.env.PORT || 8080);
+  createPreviewServer().listen(port, '127.0.0.1', () => console.log(`Local UI preview: http://127.0.0.1:${port}\nEmail sending requires PHP-enabled hosting.`));
+}
+module.exports = { createPreviewServer };
