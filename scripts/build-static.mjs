@@ -8,8 +8,14 @@ const output = join(root, 'dist');
 export const publicFiles = [
   'index.html', 'about.html', 'services.html', 'pictures.html', 'contact.html',
   'send-email.php', 'css/styles.css', 'js/scripts.js',
-  'images/logo.JPG', 'images/solar-panels.jpg',
-  ...Array.from({ length: 11 }, (_, i) => `images/installation${i + 1}.JPG`),
+  'images/solar-fix-solutions-logo.jpg', 'images/coastal-solar-rooftop-hero.jpg',
+  'images/coastal-rooftop-solar-array.jpg', 'images/residential-rooftop-solar-panels.jpg',
+  'images/deye-dual-inverter-four-battery-system.jpg',
+  'images/deye-inverter-three-battery-installation.jpg',
+  'images/sunsynk-inverter-volta-batteries.jpg',
+  'images/deye-garage-inverter-dual-batteries.jpg',
+  'images/deye-inverter-single-battery-installation.jpg',
+  'images/workshop-inverter-battery-installation.jpg',
 ];
 rmSync(output, { recursive: true, force: true });
 for (const file of publicFiles) {

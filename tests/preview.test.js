@@ -13,7 +13,7 @@ before(async () => {
 after(async () => { if (server) { server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); } });
 
 test('all pages and public assets are served', async () => {
-  for (const route of ['/', '/about.html', '/services.html', '/pictures.html', '/contact.html', '/css/styles.css', '/js/scripts.js', '/images/installation1.JPG']) {
+  for (const route of ['/', '/about.html', '/services.html', '/pictures.html', '/contact.html', '/css/styles.css', '/js/scripts.js', '/images/coastal-rooftop-solar-array.jpg', '/images/deye-inverter-three-battery-installation.jpg', '/images/solar-fix-solutions-logo.jpg']) {
     const response = await fetch(base + route);
     assert.equal(response.status, 200, route);
     assert.ok((await response.arrayBuffer()).byteLength > 0, route);
@@ -34,8 +34,9 @@ test('local contact preview reports failure instead of pretending to send mail',
 test('Afrihost package contains only intended public files', () => {
   const root = path.join(__dirname, '..', 'dist');
   const files = fs.readdirSync(root, { recursive: true }).filter(file => fs.statSync(path.join(root, file)).isFile());
-  assert.equal(files.length, 21);
+  assert.equal(files.length, 18);
   assert.ok(files.includes('send-email.php'));
   assert.ok(files.includes('index.html'));
   assert.ok(!files.some(file => /\.env|node_modules|server\.js|package|README|\.git/.test(file)));
+  assert.ok(!files.some(file => /installation\d+\.JPG|logo\.JPG/.test(file)), 'Unselected legacy images must not ship');
 });

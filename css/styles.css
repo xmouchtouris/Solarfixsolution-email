@@ -234,11 +234,13 @@ svg {
   line-height:1.2;
   flex-shrink:0
 }
-.brand img {
-  width:64px;
-  height:64px;
-  object-fit:contain;
-  border-radius:4px
+.brand-symbol {
+  width:68px;
+  height:auto;
+  aspect-ratio:35/19;
+  overflow:hidden;
+  flex-shrink:0;
+  mix-blend-mode:multiply
 }
 .brand-name {
   font-family:'Manrope',sans-serif;
@@ -490,7 +492,7 @@ svg {
 }
 .project-preview img {
   width:100%;
-  height:410px;
+  height:480px;
   object-fit:cover;
   transition:transform .5s
 }
@@ -784,11 +786,15 @@ svg {
 }
 .gallery-grid {
   display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:26px
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:36px 26px
 }
 .gallery-card {
-  min-width:0
+  min-width:0;
+  grid-column:span 2
+}
+.gallery-card-wide {
+  grid-column:span 3
 }
 .gallery-open {
   display:block;
@@ -801,9 +807,13 @@ svg {
 }
 .gallery-open img {
   width:100%;
-  height:330px;
+  height:auto;
+  aspect-ratio:3/4;
   object-fit:cover;
   transition:transform .4s
+}
+.gallery-card-wide img {
+  aspect-ratio:16/10
 }
 .gallery-open:hover img {
   transform:scale(1.035)
@@ -1048,6 +1058,16 @@ noscript p {
   font-size:.84rem;
   color:var(--muted)
 }
+.footer-logo {
+  display:inline-block;
+  width:210px;
+  max-width:100%;
+  mix-blend-mode:multiply
+}
+.footer-logo img {
+  width:100%;
+  height:auto
+}
 .footer-heading {
   margin-block:10px 20px;
   font-size:.78rem;
@@ -1106,9 +1126,8 @@ noscript p {
   .brand-name {
     font-size:.9rem
   }
-  .brand img {
-    width:55px;
-    height:55px
+  .brand-symbol {
+    width:58px
   }
   .contact-layout,.story-layout,.split-section {
     gap:45px
@@ -1118,9 +1137,6 @@ noscript p {
   }
   .cta-panel {
     padding:45px
-  }
-  .gallery-open img {
-    height:280px
   }
 }
 @media(max-width:860px) {
@@ -1262,8 +1278,8 @@ noscript p {
     grid-template-columns:1fr 1fr;
     gap:24px
   }
-  .gallery-open img {
-    height:340px
+  .gallery-card {
+    grid-column:auto
   }
   .contact-details {
     max-width:600px
@@ -1294,9 +1310,8 @@ noscript p {
     gap:14px;
     flex-wrap:wrap
   }
-  .brand img {
-    width:52px;
-    height:52px
+  .brand-symbol {
+    width:58px
   }
   .brand-name {
     font-size:.87rem
@@ -1482,8 +1497,8 @@ noscript p {
   .gallery-grid {
     gap:25px 16px
   }
-  .gallery-open img {
-    height:235px
+  .gallery-card-wide {
+    grid-column:1/-1
   }
   .gallery-card figcaption {
     font-size:.76rem;
@@ -1552,9 +1567,8 @@ noscript p {
   .brand-name {
     font-size:.8rem
   }
-  .brand img {
-    width:44px;
-    height:44px
+  .brand-symbol {
+    width:48px
   }
   .menu-toggle {
     padding:9px
@@ -1564,9 +1578,6 @@ noscript p {
   }
   .gallery-grid {
     grid-template-columns:1fr
-  }
-  .gallery-open img {
-    height:340px
   }
 }
 @media(prefers-reduced-motion:reduce) {

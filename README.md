@@ -65,6 +65,10 @@ After the Afrihost form is deployed and a test enquiry has arrived, stop/delete 
 - `js/scripts.js`: mobile navigation, gallery and form feedback.
 - `send-email.php`: production email endpoint.
 
-The existing `.html` addresses and original photographs are preserved. Fonts load from Google Fonts with local sans-serif fallbacks. No framework or database is needed.
+The existing `.html` addresses are preserved. Fonts load from Google Fonts with local sans-serif fallbacks. No framework or database is needed.
+
+The gallery contains eight selected photographs: two existing rooftop views and six newer inverter/battery installations. Website images use descriptive, lowercase filenames. The full supplied logo appears in the footer; the header displays its roof-and-sun artwork alongside the business name. Source photographs are not retouched, and the originals supplied in Downloads are unchanged. Unselected older images remain in the repository but are excluded from `dist/`.
+
+When adding or renaming an image, update its page references and the explicit public-file list in `scripts/build-static.mjs`, then run the checks and build again.
 
 For this site, keeping Afrihost and using its PHP support is the simplest deployment. A Git-connected static host can automate publishing, but would require another solution for the PHP form. Staying on Afrihost keeps the public pages and contact endpoint together.

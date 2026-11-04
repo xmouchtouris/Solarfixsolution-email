@@ -30,5 +30,9 @@ for (const [page, html] of content) {
 }
 const contact = content.get('contact.html');
 assert.match(contact, /action="send-email\.php" method="post"/);
-assert.equal((content.get('pictures.html').match(/class="gallery-open"/g) || []).length, 11);
+const gallery = content.get('pictures.html');
+const photoCount = (gallery.match(/class="gallery-open"/g) || []).length;
+assert.ok(photoCount > 0, 'Gallery must contain photographs');
+assert.ok(gallery.includes(`${photoCount} PHOTOGRAPHS`), 'Gallery total must match the photographs');
+assert.ok(gallery.includes(`1 / ${photoCount}</span>`), 'Initial lightbox counter must match the photographs');
 console.log(`Checked ${pages.length} pages and ${references} local references; navigation, images, anchors and PHP form route are present.`);
